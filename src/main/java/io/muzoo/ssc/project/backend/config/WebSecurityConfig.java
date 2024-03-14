@@ -40,16 +40,6 @@ public class WebSecurityConfig {
 		http.exceptionHandling(exception -> exception
 				.authenticationEntryPoint(new JsonHttp403ForbiddenEntryPoint()));
 
-/*		http
-			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/", "/home").permitAll()
-				.anyRequest().authenticated()
-			)
-			.formLogin((form) -> form
-				.loginPage("/login")
-				.permitAll()
-			)
-			.logout((logout) -> logout.permitAll());*/
 
 		return http.build();
 	}
