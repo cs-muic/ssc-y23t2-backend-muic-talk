@@ -1,6 +1,8 @@
 package io.muzoo.ssc.project.backend.config;
 
 
+import io.muzoo.ssc.project.backend.SimpleResponseDTO;
+import io.muzoo.ssc.project.backend.util.AjaxUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -67,7 +69,16 @@ public class WebSecurityConfig {
 							 HttpServletResponse response,
 							 AuthenticationException authException) throws IOException, ServletException {
 			//output JSON message
-			response.getWriter().println("Access Denied Muhahahaha!!");
+
+			String ajaxJSON = AjaxUtils.convertToString(
+					SimpleResponseDTO
+							.builder()
+							.success(false)
+							.message("Forbidden")
+							.build());
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/json");
+			response.getWriter().println(ajaxJSON);
 		}
 	}
 }

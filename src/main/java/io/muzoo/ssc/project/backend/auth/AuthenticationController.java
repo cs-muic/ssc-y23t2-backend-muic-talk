@@ -1,8 +1,8 @@
 package io.muzoo.ssc.project.backend.auth;
 
+import io.muzoo.ssc.project.backend.SimpleResponseDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,25 +18,41 @@ public class AuthenticationController {
     }
 
     @PostMapping("/api/login")
-    public String login(HttpServletRequest request){
+    public SimpleResponseDTO login(HttpServletRequest request){
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         try{
             request.login(username, password);
-            return "login successful";
+            return SimpleResponseDTO
+                    .builder()
+                    .success(true)
+                    .message("login successfully")
+                    .build();
         } catch(ServletException e){
-            return "failed to login";
+            return SimpleResponseDTO
+                    .builder()
+                    .success(false)
+                    .message("Incorrect username or password")
+                    .build();
         }
     }
 
     @GetMapping("/api/logout")
-    public String logout(HttpServletRequest request){
+    public SimpleResponseDTO logout(HttpServletRequest request){
         try {
             request.logout();
-            return "logout successful";
+            return SimpleResponseDTO
+                    .builder()
+                    .success(true)
+                    .message("logout successfully")
+                    .build();
 
         } catch (ServletException e) {
-            return "failed to logout";
+            return SimpleResponseDTO
+                    .builder()
+                    .success(false)
+                    .message("failed to logout")
+                    .build();
         }
     }
 }
