@@ -16,3 +16,9 @@ dependency-reduced-pom.xml
 .idea
 *.iml
 README.html
+/mvnw
+/mvnw.cmd
+/gradle/wrapper/gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
+/.mvn/wrapper/maven-wrapper.jar
+/.mvn/wrapper/maven-wrapper.properties
