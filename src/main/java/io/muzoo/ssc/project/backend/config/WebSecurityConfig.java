@@ -15,10 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-/*	@Autowired
-	private OurUserDetailService userDetailService;
-	*/
-
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
@@ -42,8 +38,5 @@ public class WebSecurityConfig {
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
-/*	@Bean
-	public UserDetailsService userDetailsService() {
-		return userDetailService;
-	}*/
+
 }
