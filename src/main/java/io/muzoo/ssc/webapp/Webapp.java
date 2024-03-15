@@ -14,7 +14,7 @@ public class Webapp {
 
     public static void main(String[] args) {
 
-        File docBase = new File("../frontend/src/main/webapp");
+        File docBase = new File("../ssc-y23t2-frontend-muic-talk/src/main/webapp");
         docBase.mkdirs();
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8082);
