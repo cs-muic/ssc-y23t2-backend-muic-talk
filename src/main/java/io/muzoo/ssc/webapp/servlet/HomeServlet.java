@@ -38,6 +38,9 @@ public class HomeServlet extends HttpServlet implements Routable {
             // do MVC in here
             String username = (String) request.getSession().getAttribute("username");
             UserService userService = UserService.getInstance();
+            String displayname = userService.findByUsername(username).getDisplayName();
+            System.out.println(username + " " + displayname);
+            request.setAttribute("displayname", displayname);
 
             request.setAttribute("currentUser", userService.findByUsername(username));
             request.setAttribute("users", userService.findAll());
