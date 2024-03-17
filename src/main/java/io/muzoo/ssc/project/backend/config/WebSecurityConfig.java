@@ -33,7 +33,7 @@ public class WebSecurityConfig {
 		//permit all OPTION request
 		http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll());
 		//permit root, api/login, api/logout to all
-		http.authorizeHttpRequests(auth -> auth.requestMatchers("/", "/api/login", "/api/logout").permitAll());
+		http.authorizeHttpRequests(auth -> auth.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami").permitAll());
 		//every other path require authentication
 		http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated());
 		//Handle error outputas JSON for unauthorized access
