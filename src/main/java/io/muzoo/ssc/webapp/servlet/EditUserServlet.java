@@ -31,6 +31,7 @@ public class EditUserServlet extends HttpServlet implements Routable {
         boolean authorized = securityService.isAuthorized(request); // Done using session & cookies
         if (authorized) {
             String username = (String) request.getSession().getAttribute("username");
+            String changePassword = (String) request.getSession().getAttribute("changePassword");
             UserService userService = UserService.getInstance();
 
             User user = userService.findByUsername(username);
@@ -81,7 +82,7 @@ public class EditUserServlet extends HttpServlet implements Routable {
                     userService.updateUserByUsername(username, displayName);
                     request.getSession().setAttribute("hasError", false);
                     request.getSession().setAttribute("message", String.format("User %s's display name has been updated to %s!", username, displayName));
-                    response.sendRedirect("/");
+                    response.sendRedirect("/user/edit");
                     return;
                 } catch (Exception e) {
                     request.getSession().setAttribute("hasError", true);
@@ -89,7 +90,7 @@ public class EditUserServlet extends HttpServlet implements Routable {
                 }
             }
             request.setAttribute("username", username);
-            request.setAttribute("displayName", displayName);
+            request.setAttribute("displayName", user.getDisplayName());
 
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/settings.jsp");
             rd.include(request, response);

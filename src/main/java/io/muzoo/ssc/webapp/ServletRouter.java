@@ -20,6 +20,7 @@ public class ServletRouter {
         routables.add(CreateUserServlet.class);
         routables.add(EditUserServlet.class);
         routables.add(LogoutServlet.class);
+        routables.add(ChatListServlet.class);
     }
 
     private SecurityService securityService;
