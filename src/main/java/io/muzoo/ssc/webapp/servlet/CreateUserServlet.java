@@ -56,6 +56,11 @@ public class CreateUserServlet extends HttpServlet implements Routable {
 
         UserService userService = UserService.getInstance();
         String errorMessage = null;
+        String role = null;
+
+        if (username.startsWith("u")) {
+            role = "Student";
+        }
 
         // Check if username is valid
         if (userService.findByUsername(username) != null) {
@@ -80,7 +85,7 @@ public class CreateUserServlet extends HttpServlet implements Routable {
             // Create a user
             try{
                 // If no error redirect
-                userService.createUser(username, password, displayName);
+                userService.createUser(username, password, displayName, role);
                 System.out.println("User created");
                 request.getSession().setAttribute("hasError", false);
                 request.getSession().setAttribute("message", String.format("User %s has been created successfully", username));
