@@ -37,6 +37,8 @@ public class ChangePasswordServlet extends HttpServlet implements Routable {
             User user = userService.findByUsername(username);
             request.setAttribute("users", user);
             request.setAttribute("username",user.getUsername());
+            request.setAttribute("displayName", user.getDisplayName());
+
             // If not success, it will arrive here
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/settings.jsp");
             rd.include(request, response);
@@ -88,7 +90,7 @@ public class ChangePasswordServlet extends HttpServlet implements Routable {
                     // If no error redirect
                     request.getSession().setAttribute("hasError",false);
                     request.getSession().setAttribute("message",String.format("Password for user %s has been updated successfully",username));
-                    response.sendRedirect("/");
+                    response.sendRedirect("/user/password");
                     return;
                 } catch (Exception e) {
                     request.getSession().setAttribute("hasError",true);
