@@ -8,7 +8,7 @@ import java.util.*;
 
 public class UserService {
 
-    private static final String INSERT_USER_SQL = "INSERT INTO tbl_user (username, password, display_name) VALUES (?, ?, ?);";
+    private static final String INSERT_USER_SQL = "INSERT INTO tbl_user (username, display_name, password, role) VALUES (?, ?, ?, ?);";
     private static final String SELECT_USER_SQL = "SELECT * FROM tbl_user WHERE username = ?";
     private static final String SELECT_ALL_USER_SQL = "SELECT * FROM tbl_user";
     private static final String DELETE_USER_SQL = "DELETE FROM tbl_user WHERE username =?";
@@ -36,15 +36,16 @@ public class UserService {
     }
 
     // create new user
-    public void createUser(String username, String password, String displayName) throws SQLException, UserServiceException {
+    public void createUser(String username, String password, String displayName, String role) throws SQLException, UserServiceException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         try {
             Connection connection = databaseConnectionService.getConnection();
             PreparedStatement ps = connection.prepareStatement(INSERT_USER_SQL);
             ps.setString(1, username);
-            ps.setString(2, hashedPassword);
-            ps.setString(3, displayName);
+            ps.setString(2, displayName);
+            ps.setString(3, hashedPassword);
+            ps.setString(4, role);
             ps.executeUpdate();
             // so need to be manually commit the change
             connection.commit();
@@ -67,8 +68,9 @@ public class UserService {
             return new User(
                     resultSet.getLong("id"),
                     resultSet.getString("username"),
-                    resultSet.getString("password"), // this is hashed password
-                    resultSet.getString("display_name")
+                    resultSet.getString("password"),
+                    resultSet.getString("display_name"),
+                    resultSet.getString("role")
             );
         } catch (Exception throwables) {
             return null;
@@ -93,7 +95,8 @@ public class UserService {
                                 resultSet.getLong("id"),
                                 resultSet.getString("username"),
                                 resultSet.getString("password"),
-                                resultSet.getString("display_name")
+                                resultSet.getString("display_name"),
+                                resultSet.getString("role")
                         ));
             }
         } catch (Exception throwables) {
@@ -168,15 +171,15 @@ public class UserService {
         }
     }
 
-    public static void main(String[] args) throws UserServiceException {
-        UserService userService = UserService.getInstance();
-        try {
-            userService.createUser("u6480922", "Aommy", "Phavarisa");
-
-        } catch(UserServiceException | SQLException e ) {
-            e.printStackTrace();
-        }
-
-    }
+//    public static void main(String[] args) throws UserServiceException {
+//        UserService userService = UserService.getInstance();
+//        try {
+//            userService.createUser("u6480952", "Ling", "Kanladaporn", "Student");
+//
+//        } catch(UserServiceException | SQLException e ) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
 }

@@ -5,12 +5,14 @@ public class User {
     private String username;
     private String password;
     private String displayName;
+    private String role;
 
-    public User(long id, String username, String password, String displayName) {
+    public User(long id, String username, String password, String displayName, String role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.displayName = displayName;
+        this.role = role;
     }
 
     public long getId() {
@@ -44,5 +46,9 @@ public class User {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
+
+    public String getRole() { return role; }
+
+    public void setRole(String role) { this.role = role; }
 }
 
