@@ -44,7 +44,7 @@ public class UserService {
             PreparedStatement ps = connection.prepareStatement(INSERT_USER_SQL);
             ps.setString(1, username);
             ps.setString(2, displayName);
-            ps.setString(3, password);
+            ps.setString(3, hashedPassword);
             ps.setString(4, role);
             ps.executeUpdate();
             // so need to be manually commit the change
