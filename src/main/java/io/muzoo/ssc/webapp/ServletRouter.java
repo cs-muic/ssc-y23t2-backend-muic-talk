@@ -2,7 +2,6 @@ package io.muzoo.ssc.webapp;
 
 import io.muzoo.ssc.webapp.servlet.*;
 import io.muzoo.ssc.webapp.servlet.CreateUserServlet;
-import io.muzoo.ssc.webapp.servlet.EditUserServlet;
 import io.muzoo.ssc.webapp.servlet.HomeServlet;
 import io.muzoo.ssc.webapp.service.SecurityService;
 import org.apache.catalina.Context;
@@ -24,7 +23,6 @@ public class ServletRouter {
         routables.add(CreateUserServlet.class);
         routables.add(UserEditServlet.class);
         routables.add(ChangePasswordServlet.class);
-        routables.add(EditUserServlet.class);
     }
 
     private SecurityService securityService;
