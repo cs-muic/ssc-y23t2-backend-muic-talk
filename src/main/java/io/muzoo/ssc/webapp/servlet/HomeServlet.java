@@ -46,6 +46,7 @@ public class HomeServlet extends HttpServlet implements Routable {
             request.setAttribute("users", userService.findAll());
 
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/home.jsp");
+            System.out.println(rd == null);
             rd.include(request, response);
 
             //removing attributes as soon as they are used is known as flash session
