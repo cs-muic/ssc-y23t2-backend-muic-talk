@@ -19,7 +19,7 @@ public class UserService {
 
     private static UserService service;
 
-    private UserService() {
+    UserService() {
 
     }
 
