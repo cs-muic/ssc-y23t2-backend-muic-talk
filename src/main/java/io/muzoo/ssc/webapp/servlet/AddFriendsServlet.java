@@ -2,7 +2,9 @@ package io.muzoo.ssc.webapp.servlet;
 
 import io.muzoo.ssc.webapp.Routable;
 import io.muzoo.ssc.webapp.model.User;
+import io.muzoo.ssc.webapp.service.FriendService;
 import io.muzoo.ssc.webapp.service.SecurityService;
+import io.muzoo.ssc.webapp.service.UserDoesNotExistException;
 import io.muzoo.ssc.webapp.service.UserService;
 
 import javax.servlet.RequestDispatcher;
@@ -17,93 +19,55 @@ public class AddFriendsServlet extends HttpServlet implements Routable {
     private SecurityService securityService;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean authorized = securityService.isAuthorized(request); // Done using session & cookies
         if (authorized) {
             // do MVC in here
             String username = (String) request.getSession().getAttribute("username");
+            String friendUser = (String) request.getParameter("friendUser");
+            System.out.println(friendUser);
             UserService userService = UserService.getInstance();
+            FriendService friendService = FriendService.getInstance();
 
-            try {
-                User currentUser = userService.findByUsername(username);
-                User userToDelete = userService.findByUsername(request.getParameter("username"));
-                if (StringUtils.equals(currentUser.getUsername(), userToDelete.getUsername())) {
-                    request.getSession().setAttribute("hasError", true);
-                    request.getSession().setAttribute("message", "You cannot delete your own account.");
-                }
-                else {
-                    if (userService.deleteUserByUsername(userToDelete.getUsername())) {
-                        // go to user list page with success msg
-                        request.getSession().setAttribute("hasError", false);
-                        request.getSession().setAttribute("message", String.format("User %s has been deleted successfully.", userToDelete.getUsername()));
-                    } else {
-                        // go to user list page with error msg
-                        request.getSession().setAttribute("hasError", true);
-                        request.getSession().setAttribute("message", String.format("Unable to delete user %s.", userToDelete.getUsername()));
-
-                    }
-                }
-            } catch (Exception e) {
+            if (friendUser.isEmpty()) {
                 request.getSession().setAttribute("hasError", true);
-                request.getSession().setAttribute("message", String.format("Unable to delete user %s.", request.getParameter("username")));
-            }
-
-            response.sendRedirect("/"); // If login is wrong, redirect !
-        } else {
-            response.sendRedirect("/login"); // If login is wrong, redirect !
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        boolean authorized = securityService.isAuthorized(request); // Done using session & cookies
-        System.out.println(authorized);
-        if (authorized) {
-            String username = (String) request.getSession().getAttribute("username");
-            String displayName =  StringUtils.trim(request.getParameter("displayName"));
-
-            UserService userService = UserService.getInstance();
-            User user = userService.findByUsername(username);
-
-            String errorMessage = null;
-            // check valid username
-            if (user == null) {
-                // Username taken
-                errorMessage = String.format("Username %s does not exist.", username);
-            }
-            // check valid displayName
-            else if (StringUtils.isBlank(displayName)) {
-                // Show error msg invalid displayName
-                errorMessage = "Display Name must not be empty.";
-            }
-            if (errorMessage != null) {
-                request.getSession().setAttribute("hasError", true);
-                request.getSession().setAttribute("message", errorMessage);
+                request.getSession().setAttribute("message", "Please input the username that you would like to add.");
             }
             else {
-                // Update user's displayName
+
                 try {
-                    userService.updateUserByUsername(username, displayName);
-                    request.getSession().setAttribute("hasError", false);
-                    request.getSession().setAttribute("message", String.format("User %s's display name has been updated to %s!", username, displayName));
-                    response.sendRedirect("/user/edit");
-                    return;
+                    User currentUser = userService.findByUsername(username);
+                    User userToAdd = userService.findByUsername(friendUser);
+
+                    if (StringUtils.equals(currentUser.getUsername(), userToAdd.getUsername())) {
+                        request.getSession().setAttribute("hasError", true);
+                        request.getSession().setAttribute("message", "You cannot add yourself!");
+                    } else if (userToAdd == null){
+                        request.getSession().setAttribute("hasError", true);
+                        request.getSession().setAttribute("message", String.format("User %s does not exist.", friendUser));
+                    }
+                    else {
+                        if (friendService.addFriend(currentUser.getUsername(), userToAdd.getUsername())) {
+                            // go to user list page with success msg
+                            request.getSession().setAttribute("hasError", false);
+                            request.getSession().setAttribute("message", String.format("A friend request has been sent to %s!", userToAdd.getUsername()));
+                        } else {
+                            // go to user list page with error msg
+                            request.getSession().setAttribute("hasError", true);
+                            request.getSession().setAttribute("message", String.format("%s does not exist.", userToAdd.getUsername()));
+
+                        }
+                    }
+                } catch (UserDoesNotExistException e) {
+                    request.getSession().setAttribute("hasError", true);
+                    request.getSession().setAttribute("message", String.format("User %s does not exist.", friendUser));
                 } catch (Exception e) {
                     request.getSession().setAttribute("hasError", true);
-                    request.getSession().setAttribute("message", e.getMessage());
+                    request.getSession().setAttribute("message", String.format("User %s does not exist.", friendUser));
                 }
             }
-            request.setAttribute("username", username);
-            request.setAttribute("displayName", displayName);
-            request.setAttribute("displayName", user.getDisplayName());
-
-            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/settings.jsp");
-            rd.include(request, response);
-            request.getSession().removeAttribute("hasError");
-            request.getSession().removeAttribute("message");
+            response.sendRedirect("/"); // If login is wrong, redirect !
         } else {
-            request.getSession().removeAttribute("hasError");
-            request.getSession().removeAttribute("message");
             response.sendRedirect("/login"); // If login is wrong, redirect !
         }
     }

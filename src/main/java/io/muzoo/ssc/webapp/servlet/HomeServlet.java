@@ -6,6 +6,7 @@
 package io.muzoo.ssc.webapp.servlet;
 
 import io.muzoo.ssc.webapp.Routable;
+import io.muzoo.ssc.webapp.service.FriendService;
 import io.muzoo.ssc.webapp.service.SecurityService;
 import io.muzoo.ssc.webapp.service.UserService;
 
@@ -38,12 +39,14 @@ public class HomeServlet extends HttpServlet implements Routable {
             // do MVC in here
             String username = (String) request.getSession().getAttribute("username");
             UserService userService = UserService.getInstance();
+            FriendService friendService = FriendService.getInstance();
             String displayname = userService.findByUsername(username).getDisplayName();
             System.out.println(username + " " + displayname);
             request.setAttribute("displayname", displayname);
 
             request.setAttribute("currentUser", userService.findByUsername(username));
             request.setAttribute("users", userService.findAll());
+            request.setAttribute("friends", friendService.findAllFriends(username));
 
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/home.jsp");
             System.out.println(rd == null);
