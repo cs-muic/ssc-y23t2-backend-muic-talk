@@ -26,6 +26,7 @@ public class ServletRouter {
         routables.add(ScheduleServlet.class);
         routables.add(ChatListServlet.class);
         routables.add(AddFriendsServlet.class);
+        routables.add(AcceptFriendRequestServlet.class);
     }
 
     private SecurityService securityService;

@@ -46,7 +46,8 @@ public class HomeServlet extends HttpServlet implements Routable {
 
             request.setAttribute("currentUser", userService.findByUsername(username));
             request.setAttribute("users", userService.findAll());
-            request.setAttribute("friends", friendService.findAllFriends(username));
+            request.setAttribute("friends", friendService.findAllAddedFriends(username));
+            request.setAttribute("friendRequests", friendService.findAllFriendRequests(username));
 
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/home.jsp");
             System.out.println(rd == null);
