@@ -19,9 +19,7 @@ public class UserService {
 
     private static UserService service;
 
-    UserService() {
-
-    }
+    UserService() { }
 
     public static UserService getInstance() {
         if (service == null) {
