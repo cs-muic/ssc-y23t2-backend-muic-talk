@@ -1,0 +1,6 @@
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+# GitHub Copilot persisted chat sessions
+/copilot/chatSessions
+/.idea/
