@@ -1,6 +1,5 @@
 package io.muzoo.ssc.project.backend;
 
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

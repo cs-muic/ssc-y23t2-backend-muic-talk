@@ -1,6 +1,5 @@
 package io.muzoo.ssc.project.backend;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

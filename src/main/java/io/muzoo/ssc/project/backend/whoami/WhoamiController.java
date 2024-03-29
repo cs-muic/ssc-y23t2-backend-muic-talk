@@ -42,6 +42,5 @@ public class WhoamiController {
         return WhoamiDTO.builder()
                 .loggedIn(false)
                 .build();
-
     }
 }
