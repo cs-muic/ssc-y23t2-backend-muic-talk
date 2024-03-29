@@ -44,7 +44,7 @@ public class WebSecurityConfig {
 		//allow root and /api/login, /api/logout
 		http.authorizeHttpRequests((authorizeHttpRequests) ->
 				authorizeHttpRequests
-						.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami")
+						.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami", "/user/create")
 						.permitAll()
 		);
 
@@ -68,7 +68,7 @@ public class WebSecurityConfig {
 
 		http
 			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/", "/home").permitAll()
+				.requestMatchers("/", "/home", "/user/create").permitAll()
 				.anyRequest().authenticated()
 			)
 			.formLogin((form) -> form

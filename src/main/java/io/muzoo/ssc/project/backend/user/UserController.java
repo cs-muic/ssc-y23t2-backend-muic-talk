@@ -22,12 +22,12 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     @PostMapping("/user/create")
     public void createUser(@RequestParam String username,
-                             @RequestParam String name,
+                             @RequestParam String displayName,
                              @RequestParam String password) {
         System.out.println("hello");
         User newUser = new User();
         newUser.setUsername(username);
-        newUser.setName(name);
+        newUser.setDisplayName(displayName);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRole("USER");
         userRepository.save(newUser);

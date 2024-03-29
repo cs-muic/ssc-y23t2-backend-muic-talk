@@ -44,6 +44,7 @@ public class AuthenticationController {
 
     }
 
+    @GetMapping("/api/logout")
     @PostMapping("/api/logout")
     public SimpleResponseDTO logout(HttpServletRequest request) {
        try{
@@ -62,5 +63,4 @@ public class AuthenticationController {
        }
 
     }
-
 }
