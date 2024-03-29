@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 @Table(name = "tbl_user")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(unique = true)
     private String username;
-    private String name;
     private String password;
     private String role;
+
 }

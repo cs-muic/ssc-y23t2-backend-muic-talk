@@ -1,7 +1,7 @@
 package io.muzoo.ssc.project.backend.config;
 
-
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
+import io.muzoo.ssc.project.backend.auth.OurUserDetailsService;
 import io.muzoo.ssc.project.backend.util.AjaxUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,16 +9,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 import java.io.IOException;
 
@@ -26,49 +26,84 @@ import java.io.IOException;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+
+	private OurUserDetailsService ourUserDetailsService;
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+		auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+	}
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		// disable csrf vdo5
+		// make life easier according to ajarn
 		http.csrf(AbstractHttpConfigurer::disable);
-		//permit all OPTION request
-		http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll());
-		//permit root, api/login, api/logout to all
-		http.authorizeHttpRequests(auth -> auth.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami").permitAll());
-		//every other path require authentication
-		http.authorizeHttpRequests(auth -> auth.requestMatchers("/**").authenticated());
-		//Handle error outputas JSON for unauthorized access
-		http.exceptionHandling(exception -> exception
-				.authenticationEntryPoint(new JsonHttp403ForbiddenEntryPoint()));
+		//allow root and /api/login, /api/logout
+		http.authorizeHttpRequests((authorizeHttpRequests) ->
+				authorizeHttpRequests
+						.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami")
+						.permitAll()
+		);
 
+		// handle unauthorized request
+		http.exceptionHandling((exceptionHandling) ->
+				exceptionHandling.authenticationEntryPoint(new JsonHttp403ForbiddenEntryPoint())
+		);
+
+		http.authorizeHttpRequests((authorizeHttpRequests) ->
+				authorizeHttpRequests
+						.requestMatchers(HttpMethod.OPTIONS, "/**")
+						.permitAll()
+		);
+		// Set every other path to require authentication
+		http.authorizeHttpRequests((authorizeHttpRequests) ->
+				authorizeHttpRequests
+						.requestMatchers(HttpMethod.OPTIONS, "/**")
+						.authenticated()
+		);
+
+
+		http
+			.authorizeHttpRequests((requests) -> requests
+				.requestMatchers("/", "/home").permitAll()
+				.anyRequest().authenticated()
+			)
+			.formLogin((form) -> form
+				.loginPage("/login")
+				.permitAll()
+			)
+			.logout((logout) -> logout.permitAll());
 
 		return http.build();
 	}
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration auth) throws Exception {
-		return auth.getAuthenticationManager();
-	}
-	@Bean
-	public PasswordEncoder passwordEncoder(){
-		return new BCryptPasswordEncoder();
+
+
+	public UserDetailsService userDetailsService() {
+		return ourUserDetailsService;
 	}
 
-	class JsonHttp403ForbiddenEntryPoint implements AuthenticationEntryPoint{
-
+	class JsonHttp403ForbiddenEntryPoint implements AuthenticationEntryPoint {
 		@Override
 		public void commence(HttpServletRequest request,
 							 HttpServletResponse response,
 							 AuthenticationException authException) throws IOException, ServletException {
-			//output JSON message
 
-			String ajaxJSON = AjaxUtils.convertToString(
+			String ajaxJson = AjaxUtils.convertToString(
 					SimpleResponseDTO
 							.builder()
 							.success(false)
 							.message("Forbidden")
-							.build());
+							.build()
+
+			);
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/json");
-			response.getWriter().println(ajaxJSON);
+			response.getWriter().println(ajaxJson);
 		}
 	}
+
+
 }

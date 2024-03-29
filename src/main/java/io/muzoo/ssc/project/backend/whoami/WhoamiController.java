@@ -7,32 +7,37 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//controller to retrieve currently logged in user
+/**
+ * A controller to rereive currentjly login uesr
+ */
+
 @RestController
 public class WhoamiController {
+
     @Autowired
     private UserRepository userRepository;
-    // make sure all API begins with /api. All for when doing proxy
-    @GetMapping ("/api/whoami")
-    public WhoamiDTO whoami(){
+
+    /**
+     * Make sure that all API path begins with /api This will be userful when we do prixy
+     */
+    @GetMapping("/api/whoami")
+    public WhoamiDTO whoami() {
+        // put try around the statemnt because we use nested dot notation which could raise a Null exception
         try{
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if(principal != null && principal instanceof org.springframework.security.core.userdetails.User){
-                // user is logged in
-
+            if (principal != null && principal instanceof org.springframework.security.core.userdetails.User){
                 org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) principal;
                 User u = userRepository.findFirstByUsername(user.getUsername());
                 return WhoamiDTO.builder()
                         .loggedIn(true)
-                        .name(u.getName())
+                        .name(u.getUsername())
                         .role(u.getRole())
                         .username(u.getUsername())
                         .build();
-
             }
+        } catch (Exception e){
+            // USER Is not logged in
 
-        } catch(Exception e){
-            // user is not logged in
         }
         return WhoamiDTO.builder()
                 .loggedIn(false)
