@@ -47,10 +47,35 @@ public class UserService {
             ps.executeUpdate();
             // so need to be manually commit the change
             connection.commit();
+
+            // After successfully creating the user, create a schedule table for the user
+            createScheduleTable(username); // Create schedule table for the new user
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new UsernameNotUniqueException(String.format("Username %s has already been taken.", username));
         } catch (Exception throwables) {
             throw new UserServiceException(throwables.getMessage());
+        }
+    }
+
+    // Method to create a schedule table for a new user
+    private void createScheduleTable(String username) {
+        // Generate a unique table name for the user's schedule
+        String tableName = "user_schedule_" + username.toLowerCase(); // Example table name
+
+        // SQL query to create the table
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
+                "event_id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "event_name VARCHAR(255), " +
+                "event_datetime DATETIME" +
+                ")";
+
+        // Execute the SQL query to create the table
+        try (Connection connection = databaseConnectionService.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate(createTableSQL);
+        } catch (SQLException e) {
+            // Handle any SQL exceptions
+            e.printStackTrace();
         }
     }
 

@@ -40,6 +40,7 @@ public class ScheduleServlet extends HttpServlet implements Routable {
         this.securityService = securityService;
     }
 
+    // doGet method
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean authorized = securityService.isAuthorized(request);
@@ -47,10 +48,10 @@ public class ScheduleServlet extends HttpServlet implements Routable {
             String username = (String) request.getSession().getAttribute("username");
             UserService userService = UserService.getInstance();
 
-            User user = userService.findByUsername(username);
+            // No need to retrieve user here since we're not using the userId anymore
 
             // Retrieve the user's schedule from the database
-            List<Event> userSchedule = scheduleService.getUserSchedule(user.getId());
+            List<Event> userSchedule = scheduleService.getUserSchedule("user_schedule_" + username.toLowerCase());
 
             // Store the user's schedule in memory
             events.clear();
@@ -75,7 +76,7 @@ public class ScheduleServlet extends HttpServlet implements Routable {
             String username = (String) request.getSession().getAttribute("username");
             UserService userService = UserService.getInstance();
 
-            User user = userService.findByUsername(username);
+            // No need to retrieve user here since we're not using the userId anymore
 
             String eventName = request.getParameter("eventName");
             String eventDateStr = request.getParameter("eventDate");
@@ -92,7 +93,7 @@ public class ScheduleServlet extends HttpServlet implements Routable {
                     events.add(new Event(eventName, eventDateTime));
 
                     // Store the event in the database
-                    boolean success = scheduleService.addEvent(user.getId(), eventName, eventDateTime);
+                    boolean success = scheduleService.addEvent("user_schedule_" + username.toLowerCase(), eventName, eventDateTime);
 
                     if (success) {
                         // Redirect to the schedule page
@@ -118,6 +119,7 @@ public class ScheduleServlet extends HttpServlet implements Routable {
         // If execution reaches here, there was an error, so redirect back to the schedule page
         response.sendRedirect(request.getContextPath() + "/schedule");
     }
+
 
     public void setScheduleService(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
