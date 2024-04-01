@@ -15,8 +15,8 @@ public class User {
         this.role = role;
     }
 
-    public long getId() {
-        return id;
+    public int getId() {
+        return (int) id;
     }
 
     public void setId(long id) {
