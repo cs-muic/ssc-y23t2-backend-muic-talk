@@ -13,10 +13,10 @@ public class Friend {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_1")
-    private User user_1;
+    @JoinColumn(name = "user1")
+    private User user1;
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_2")
-    private User user_2;
-    private boolean pending_user_2;
+    @JoinColumn(name = "user2")
+    private User user2;
+    private boolean pending_user2;
 }
