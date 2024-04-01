@@ -6,6 +6,8 @@ import io.muzoo.ssc.project.backend.SimpleResponseDTO;
 import jakarta.servlet.ServletException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,6 @@ public class UserController {
     public SimpleResponseDTO createUser(@RequestParam String username,
                              @RequestParam String displayName,
                              @RequestParam String password) {
-        System.out.println("hello");
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setDisplayName(displayName);
@@ -49,5 +50,40 @@ public class UserController {
                     .message(e.getMessage())
                     .build();
         }
+    }
+
+    @PostMapping("/user/displayName")
+    public SimpleResponseDTO changeDisplayName(@RequestParam String username,
+                                        @RequestParam String displayName) {
+        User user = userRepository.findFirstByUsername(username);
+        user.setDisplayName(displayName);
+        userRepository.save(user);
+        return SimpleResponseDTO
+                .builder()
+                .success(true)
+                .message(String.format("Display name successfully updated to %s.", displayName))
+                .build();
+    }
+
+    @PostMapping("/user/password")
+    public SimpleResponseDTO changePassword(@RequestParam String username,
+                                               @RequestParam String oldPassword,
+                                               @RequestParam String newPassword) {
+        User user = userRepository.findFirstByUsername(username);
+        if (BCrypt.checkpw(oldPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return SimpleResponseDTO
+                    .builder()
+                    .success(true)
+                    .message("Password has been successfully updated.")
+                    .build();
+        } else return SimpleResponseDTO
+                .builder()
+                .success(false)
+                .message("Incorrect password")
+                .build();
+
+
     }
 }
