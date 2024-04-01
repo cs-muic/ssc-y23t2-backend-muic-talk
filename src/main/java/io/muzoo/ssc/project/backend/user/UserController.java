@@ -3,6 +3,7 @@ package io.muzoo.ssc.project.backend.user;
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.UserRepository;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
+import jakarta.servlet.ServletException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +22,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @PostMapping("/user/create")
-    public void createUser(@RequestParam String username,
+    public SimpleResponseDTO createUser(@RequestParam String username,
                              @RequestParam String displayName,
                              @RequestParam String password) {
         System.out.println("hello");
@@ -30,7 +31,23 @@ public class UserController {
         newUser.setDisplayName(displayName);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRole("USER");
-        userRepository.save(newUser);
-        System.out.println("Success");
+        try {
+            if (userRepository.findFirstByUsername(username) == null) {
+                userRepository.save(newUser);
+                System.out.println("Success");
+                return SimpleResponseDTO
+                        .builder()
+                        .success(true)
+                        .message("User created successfully.")
+                        .build();
+            } else throw new UsernameNotUniqueException("Username exists.");
+        }
+        catch (UsernameNotUniqueException e) {
+            return SimpleResponseDTO
+                    .builder()
+                    .success(false)
+                    .message(e.getMessage())
+                    .build();
+        }
     }
 }
