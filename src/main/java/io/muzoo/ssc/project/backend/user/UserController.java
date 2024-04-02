@@ -86,4 +86,43 @@ public class UserController {
 
 
     }
+
+    @PostMapping("/user/password/verify")
+    public SimpleResponseDTO verifyPassword(@RequestParam String username,
+                                            @RequestParam String password) {
+        User user = userRepository.findFirstByUsername(username);
+        if (BCrypt.checkpw(password, user.getPassword())) {
+            return SimpleResponseDTO
+                    .builder()
+                    .success(true)
+                    .message("Password has been successfully verified.")
+                    .build();
+        } else return SimpleResponseDTO
+                .builder()
+                .success(false)
+                .message("Incorrect password")
+                .build();
+
+
+    }
+
+    @PostMapping("/user/delete")
+    public SimpleResponseDTO deleteUser(@RequestParam String username,
+                                            @RequestParam String password) {
+        User user = userRepository.findFirstByUsername(username);
+        if (BCrypt.checkpw(password, user.getPassword())) {
+            userRepository.delete(user);
+            return SimpleResponseDTO
+                    .builder()
+                    .success(true)
+                    .message("User has been deleted.")
+                    .build();
+        } else return SimpleResponseDTO
+                .builder()
+                .success(false)
+                .message("Failed to delete account.")
+                .build();
+
+
+    }
 }

@@ -20,4 +20,7 @@ public class User {
     private String displayName;
     private String password;
     private String role;
+
+    @OneToMany(mappedBy = "user2")
+    List<Friend> requests;
 }
