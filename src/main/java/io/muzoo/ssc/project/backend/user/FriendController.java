@@ -1,6 +1,9 @@
 package io.muzoo.ssc.project.backend.user;
 
 import io.muzoo.ssc.project.backend.*;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -79,10 +82,16 @@ public class FriendController {
         User user = userRepository.findFirstByUsername(username);
         List<Friend> requests = friendRepository.findAllByUser1OrUser2AndPending(user,user,true);
         System.out.println(requests.get(0).getUser1().getUsername());
+        JsonArrayBuilder friends = Json.createArrayBuilder();
+        for (Friend req : requests) {
+            friends.add(Json.createObjectBuilder()
+                    .add("user1", req.getUser1().getUsername())
+            );
+        }
         return FriendDTO
                 .builder()
                 .success(true)
-                .friends(requests)
+                .friends(friends.build())
                 .request(true)
                 .build();
     }
