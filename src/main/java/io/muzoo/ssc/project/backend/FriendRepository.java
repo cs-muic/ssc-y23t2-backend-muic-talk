@@ -9,7 +9,7 @@ import java.util.List;
 public interface FriendRepository extends JpaRepository<Friend, Long>{
     List<Friend> findAllByUser1(User user1);
 
-    List<Friend> findAllByUser1OrUser2AndPending(User user1, User user2, boolean pending);
+    List<Friend> findAllByUser1OrUser2(User user1, User user2);
 
     Friend findFirstByUser1AndUser2(User user1, User user2);
 }

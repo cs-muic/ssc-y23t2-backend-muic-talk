@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 // You don't have to create a UserController or UserService object explicitly,
 // Spring will do for youuu
@@ -70,18 +71,44 @@ public class FriendController {
     @PostMapping("/user/requests")
     public FriendDTO getFriendRequests(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
-        List<Friend> requests = friendRepository.findAllByUser1OrUser2AndPending(user,user,true);
+        List<Friend> requests = friendRepository.findAllByUser1OrUser2(user,user);
         JsonArrayBuilder friends = Json.createArrayBuilder();
         for (Friend req : requests) {
-            friends.add(Json.createObjectBuilder()
-                    .add("username", req.getUser1().getUsername())
-            );
+            if (req.isPending()) {
+                friends.add(Json.createObjectBuilder()
+                        .add("username", req.getUser1().getUsername())
+                );
+            }
         }
         return FriendDTO
                 .builder()
                 .success(true)
                 .friends(friends.build())
                 .request(true)
+                .build();
+    }
+    @PostMapping("/user/friends")
+    public FriendDTO getFriends(@RequestParam String username) {
+        User user = userRepository.findFirstByUsername(username);
+        List<Friend> requests = friendRepository.findAllByUser1OrUser2(user,user);
+        JsonArrayBuilder friends = Json.createArrayBuilder();
+        for (Friend req : requests) {
+            if (!req.isPending()) {
+                System.out.println(req.getUser1().getUsername() + ", " + req.getUser2().getUsername());
+                if (Objects.equals(req.getUser1().getUsername(), user.getUsername()))
+                    friends.add(Json.createObjectBuilder()
+                            .add("username", req.getUser2().getUsername())
+                    );
+                else friends.add(Json.createObjectBuilder()
+                        .add("username", req.getUser1().getUsername())
+                );
+            }
+        }
+        return FriendDTO
+                .builder()
+                .success(true)
+                .friends(friends.build())
+                .request(false)
                 .build();
     }
 }
