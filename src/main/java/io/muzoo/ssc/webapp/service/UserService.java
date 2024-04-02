@@ -73,6 +73,7 @@ public class UserService {
         try (Connection connection = databaseConnectionService.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(createTableSQL);
+            System.out.println("schedule table has created");
         } catch (SQLException e) {
             // Handle any SQL exceptions
             e.printStackTrace();

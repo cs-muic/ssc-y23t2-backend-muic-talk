@@ -14,9 +14,9 @@ public class ScheduleService {
     public static String JDBC_PASSWORD = "hardpass";
 
     // Method to add an event to the database
-    // Method to add an event to the database
     public boolean addEvent(String tableName, String eventName, LocalDateTime eventDateTime) {
         try (Connection connection = DriverManager.getConnection(JDBC_URL, JDBC_USERNAME, JDBC_PASSWORD)) {
+            System.out.println("connection success, addEvent");
             String sql = "INSERT INTO " + tableName + " (event_name, event_datetime) VALUES (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, eventName);
@@ -30,10 +30,10 @@ public class ScheduleService {
     }
 
     // Method to retrieve a user's schedule from the database
-    // Method to retrieve a user's schedule from the database
     public List<Event> getUserSchedule(String tableName) {
         List<Event> userSchedule = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(JDBC_URL, JDBC_USERNAME, JDBC_PASSWORD)) {
+            System.out.println("connection success, getUserSchedule");
             String sql = "SELECT * FROM " + tableName;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();

@@ -40,43 +40,60 @@ public class ScheduleServlet extends HttpServlet implements Routable {
         this.securityService = securityService;
     }
 
-    // doGet method
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean authorized = securityService.isAuthorized(request);
         if (authorized) {
+            System.out.println("Successfully authenticated in ScheduleServlet doGet");
             String username = (String) request.getSession().getAttribute("username");
-            UserService userService = UserService.getInstance();
-
-            // No need to retrieve user here since we're not using the userId anymore
 
             // Retrieve the user's schedule from the database
             List<Event> userSchedule = scheduleService.getUserSchedule("user_schedule_" + username.toLowerCase());
-
-            // Store the user's schedule in memory
-            events.clear();
-            events.addAll(userSchedule);
 
             // Pass the user's schedule to the frontend
             request.setAttribute("userSchedule", userSchedule);
 
             RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/schedule.jsp");
-            rd.include(request, response);
-
-            request.getSession().removeAttribute("hasError");
-            request.getSession().removeAttribute("message");
+            rd.forward(request, response);
+        } else {
+            response.sendRedirect(request.getContextPath() + "/login");
         }
     }
+
+
+//    // doGet method
+//    @Override
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        boolean authorized = securityService.isAuthorized(request);
+//        if (authorized) {
+//            System.out.println("Successfully authenticated in ScheduleServlet doGet");
+//            String username = (String) request.getSession().getAttribute("username");
+//
+//            // Retrieve the user's schedule from the database
+//            List<Event> userSchedule = scheduleService.getUserSchedule("user_schedule_" + username.toLowerCase());
+//
+//            // Log the retrieved events
+//            System.out.println("Retrieved event from user_schedule_" + username.toLowerCase() + ": " + userSchedule);
+//            // Log the retrieved events
+//            System.out.println("Retrieved events: " + userSchedule);
+//
+//            // Pass the user's schedule to the frontend
+//            request.setAttribute("userSchedule", userSchedule);
+//
+//            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/schedule.jsp");
+//            rd.forward(request, response);
+//        } else {
+//            response.sendRedirect(request.getContextPath() + "/login");
+//        }
+//    }
 
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean authorized = securityService.isAuthorized(request);
         if (authorized) {
+            System.out.println("success, doPost-ScheduleServlet");
             String username = (String) request.getSession().getAttribute("username");
-            UserService userService = UserService.getInstance();
-
-            // No need to retrieve user here since we're not using the userId anymore
 
             String eventName = request.getParameter("eventName");
             String eventDateStr = request.getParameter("eventDate");
@@ -89,15 +106,17 @@ public class ScheduleServlet extends HttpServlet implements Routable {
                     LocalTime eventTime = LocalTime.parse(eventTimeStr);
                     LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
 
-                    // Store the event in memory
-                    events.add(new Event(eventName, eventDateTime));
-
                     // Store the event in the database
                     boolean success = scheduleService.addEvent("user_schedule_" + username.toLowerCase(), eventName, eventDateTime);
 
                     if (success) {
-                        // Redirect to the schedule page
-                        response.sendRedirect(request.getContextPath() + "/schedule");
+                        // Fetch the updated schedule from the database
+                        List<Event> userSchedule = scheduleService.getUserSchedule("user_schedule_" + username.toLowerCase());
+                        // Pass the updated schedule to the frontend
+                        request.setAttribute("userSchedule", userSchedule);
+                        // Forward to the schedule page
+                        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/schedule.jsp");
+                        rd.forward(request, response);
                         return;
                     } else {
                         // Handle error
@@ -116,8 +135,9 @@ public class ScheduleServlet extends HttpServlet implements Routable {
             }
         }
 
-        // If execution reaches here, there was an error, so redirect back to the schedule page
-        response.sendRedirect(request.getContextPath() + "/schedule");
+        // If execution reaches here, there was an error, so forward to the schedule page without a redirect
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/schedule.jsp");
+        rd.forward(request, response);
     }
 
 
