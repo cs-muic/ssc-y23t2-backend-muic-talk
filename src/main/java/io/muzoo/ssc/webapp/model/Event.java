@@ -1,48 +1,40 @@
 package io.muzoo.ssc.webapp.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Event {
-    private int eventId;
-    private String eventName;
-    private LocalDateTime eventDateTime;
 
-    // Constructor
-    public Event(int eventId, String eventName, LocalDateTime eventDateTime) {
-        this.eventId = eventId;
-        this.eventName = eventName;
-        this.eventDateTime = eventDateTime;
+    private int id;
+    private String name;
+    private LocalDateTime dateTime;
+
+    public Event(int id, String name, LocalDateTime dateTime) {
+        this.id = id;
+        this.name = name;
+        this.dateTime = dateTime;
     }
 
-    // Constructor when eventId is not provided
-    public Event(String eventName, LocalDateTime eventDateTime) {
-        this.eventName = eventName;
-        this.eventDateTime = eventDateTime;
+    public int getId() {
+        return id;
     }
 
-    // Getters and setters
-    public int getEventId() {
-        return eventId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
+    public String getName() {
+        return name;
     }
 
-    public String getEventName() {
-        return eventName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public LocalDateTime getEventDateTime() {
-        return eventDateTime;
-    }
-
-    public void setEventDateTime(LocalDateTime eventDateTime) {
-        this.eventDateTime = eventDateTime;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }
