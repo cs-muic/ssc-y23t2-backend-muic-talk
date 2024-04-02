@@ -54,38 +54,27 @@ public class FriendController {
     @PostMapping("/user/accept")
     public SimpleResponseDTO acceptFriendRequest(@RequestParam String username,
                                         @RequestParam String userToAdd) {
-        try {
-            User toAdd = userRepository.findFirstByUsername(userToAdd);
-            if (toAdd == null) throw new UserDoesNotExistException("The user you are trying to add does not exist.");
-            Friend newFriend = new Friend();
-            newFriend.setUser1(userRepository.findFirstByUsername(username));
-            newFriend.setUser2(userRepository.findFirstByUsername(userToAdd));
-            newFriend.setPending(true);
-            friendRepository.save(newFriend);
-            return SimpleResponseDTO
-                    .builder()
-                    .success(true)
-                    .message(String.format("Friend Request sent successfully to %s.", userToAdd))
-                    .build();
-        }
-        catch (UserDoesNotExistException e) {
-            return SimpleResponseDTO
-                    .builder()
-                    .success(false)
-                    .message(e.getMessage())
-                    .build();
-        }
+        // We know userToAdd is user1
+        User toAdd = userRepository.findFirstByUsername(userToAdd);
+        User user = userRepository.findFirstByUsername(username);
+        Friend acceptRequest = friendRepository.findFirstByUser1AndUser2(toAdd, user);
+        acceptRequest.setPending(false);
+        friendRepository.save(acceptRequest);
+        return SimpleResponseDTO
+                .builder()
+                .success(true)
+                .message(String.format("Friend Request from %s has been accepted.", userToAdd))
+                .build();
     }
 
     @PostMapping("/user/requests")
     public FriendDTO getFriendRequests(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
         List<Friend> requests = friendRepository.findAllByUser1OrUser2AndPending(user,user,true);
-        System.out.println(requests.get(0).getUser1().getUsername());
         JsonArrayBuilder friends = Json.createArrayBuilder();
         for (Friend req : requests) {
             friends.add(Json.createObjectBuilder()
-                    .add("user1", req.getUser1().getUsername())
+                    .add("username", req.getUser1().getUsername())
             );
         }
         return FriendDTO

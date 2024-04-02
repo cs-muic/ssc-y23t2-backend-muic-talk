@@ -10,4 +10,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long>{
     List<Friend> findAllByUser1(User user1);
 
     List<Friend> findAllByUser1OrUser2AndPending(User user1, User user2, boolean pending);
+
+    Friend findFirstByUser1AndUser2(User user1, User user2);
 }
