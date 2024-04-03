@@ -1,13 +1,10 @@
-package io.muzoo.ssc.project.backend.user;
+package io.muzoo.ssc.project.backend.friend;
 
 import io.muzoo.ssc.project.backend.*;
+import io.muzoo.ssc.project.backend.user.UserDoesNotExistException;
 import jakarta.json.Json;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

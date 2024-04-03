@@ -1,7 +1,7 @@
 package io.muzoo.ssc.project.backend;
 import java.util.HashSet;
 
-import io.muzoo.ssc.project.backend.group.Group;
+//import io.muzoo.ssc.project.backend.group.Group;
 import jakarta.persistence.*;
 import jdk.jfr.Name;
 import lombok.Getter;

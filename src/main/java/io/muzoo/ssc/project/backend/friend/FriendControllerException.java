@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend.user;
+package io.muzoo.ssc.project.backend.friend;
 
 public class FriendControllerException extends Exception {
     public FriendControllerException(String message) {

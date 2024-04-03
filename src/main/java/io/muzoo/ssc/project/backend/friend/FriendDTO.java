@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend.user;
+package io.muzoo.ssc.project.backend.friend;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.muzoo.ssc.project.backend.Friend;
