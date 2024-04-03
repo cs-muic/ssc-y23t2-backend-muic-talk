@@ -2,6 +2,8 @@ package io.muzoo.ssc.project.backend.schedule;
 
 import io.muzoo.ssc.project.backend.user.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,6 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/schedule")
 public class ScheduleController {
 
     @Autowired
@@ -23,13 +24,7 @@ public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
 
-    @Autowired
-    public ScheduleController(SecurityService securityService, ScheduleService scheduleService) {
-        this.securityService = securityService;
-        this.scheduleService = scheduleService;
-    }
-
-    @GetMapping
+    @GetMapping("/schedule")
     public String showSchedule(HttpServletRequest request, Model model) {
         boolean authorized = securityService.isAuthorized(request);
         if (authorized) {
@@ -49,7 +44,7 @@ public class ScheduleController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/schedule")
     public String addEvent(HttpServletRequest request,
                            @RequestParam String eventName,
                            @RequestParam String eventDate,
@@ -93,16 +88,22 @@ public class ScheduleController {
         return "redirect:/schedule";
     }
 
-    @DeleteMapping("/{eventId}")
-    public void deleteEvent(HttpServletRequest request, @PathVariable int eventId) {
+    @DeleteMapping("/schedule/{eventId}")
+    public ResponseEntity<?> deleteEvent(HttpServletRequest request, @PathVariable int eventId) {
         boolean authorized = securityService.isAuthorized(request);
         if (authorized) {
             System.out.println("Success, doDelete-ScheduleController");
             String username = (String) request.getSession().getAttribute("username");
 
             // Delete the event from the user's schedule
-            scheduleService.deleteEvent("user_schedule_" + username.toLowerCase(), eventId);
+            boolean success = scheduleService.deleteEvent("user_schedule_" + username.toLowerCase(), eventId);
+            if (success) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        // Note: You might want to handle the response accordingly, such as returning a ResponseEntity.
     }
 }
