@@ -3,6 +3,7 @@ package io.muzoo.ssc.project.backend.user;
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.UserRepository;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
+import io.muzoo.ssc.project.backend.user.DatabaseConnection;
 import jakarta.servlet.ServletException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 // You don't have to create a UserController or UserService object explicitly,
 // Spring will do for youuu
@@ -23,6 +28,10 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private DatabaseConnection databaseConnectionService;
+
     @PostMapping("/user/create")
     public SimpleResponseDTO createUser(@RequestParam String username,
                              @RequestParam String displayName,
@@ -35,6 +44,7 @@ public class UserController {
         try {
             if (userRepository.findFirstByUsername(username) == null) {
                 userRepository.save(newUser);
+                createScheduleTable(username); // Create schedule table for the new user
                 System.out.println("Success");
                 return SimpleResponseDTO
                         .builder()
@@ -122,7 +132,25 @@ public class UserController {
                 .success(false)
                 .message("Failed to delete account.")
                 .build();
-
-
     }
+
+    // Method to create a schedule table for a new user
+    private void createScheduleTable(String username) {
+        String tableName = "user_schedule_" + username.toLowerCase();
+
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
+                "event_id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "event_name VARCHAR(255), " +
+                "event_datetime DATETIME" +
+                ")";
+
+        try (Connection connection = databaseConnectionService.getConnection();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate(createTableSQL);
+            System.out.println("schedule table has created");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
