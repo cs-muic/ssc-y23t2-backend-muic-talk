@@ -1,44 +1,22 @@
 package io.muzoo.ssc.project.backend.schedule;
 
-import java.time.LocalDateTime;
+import io.muzoo.ssc.project.backend.user.User;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.sql.Timestamp;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "tbl_event")
 public class Event {
+    @Id
     private int id;
     private String name;
-    private LocalDateTime dateTime;
-
-    public Event(int id, String name, LocalDateTime dateTime) {
-        this.id = id;
-        this.name = name;
-        this.dateTime = dateTime;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public String getDateTimeString() {
-        return dateTime.toString();
-    }
-
+    private Timestamp dateTime;
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "user", nullable = false)
+    private User user;
 }
