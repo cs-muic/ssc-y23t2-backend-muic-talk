@@ -5,30 +5,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "my_groups")
+@Getter
+@Setter
+@Table(name = "tbl_groups")
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Setter
     private String name;
-
+    private Timestamp created;
 
     @Setter
     @Getter
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "group_users",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+    @ManyToMany(mappedBy="groups", fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
     // Add convenience methods to manage users

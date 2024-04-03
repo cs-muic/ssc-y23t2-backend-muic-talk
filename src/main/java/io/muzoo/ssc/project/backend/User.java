@@ -24,11 +24,7 @@ public class User {
     private String password;
     private String role;
 
-    @OneToMany(mappedBy = "user2")
-    List<Friend> requests;
-
-
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    @ManyToMany
     private Set<Group> groups = new HashSet<>();
 
 }
