@@ -37,4 +37,8 @@ public class Event {
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
+
+    public String getDateTimeString() {
+        return dateTime.toString();
+    }
 }

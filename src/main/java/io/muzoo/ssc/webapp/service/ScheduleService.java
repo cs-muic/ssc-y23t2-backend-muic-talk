@@ -49,6 +49,19 @@ public class ScheduleService {
         return userSchedule;
     }
 
+    public boolean deleteEvent(String tableName, int eventId) {
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, JDBC_USERNAME, JDBC_PASSWORD)) {
+            String sql = "DELETE FROM " + tableName + " WHERE event_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, eventId);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     public void setJdbcUrl(String jdbcUrl) {
         this.JDBC_URL = jdbcUrl;

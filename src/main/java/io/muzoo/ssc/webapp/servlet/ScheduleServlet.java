@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 import java.time.*;
 
@@ -23,12 +24,6 @@ import static io.muzoo.ssc.webapp.service.ScheduleService.*;
 public class ScheduleServlet extends HttpServlet implements Routable {
     private SecurityService securityService;
     private ScheduleService scheduleService;
-    private List<Event> events;
-
-    public ScheduleServlet() {
-        events = new ArrayList<>();
-    }
-
 
     @Override
     public String getMapping() {
@@ -49,6 +44,7 @@ public class ScheduleServlet extends HttpServlet implements Routable {
 
             // Retrieve the user's schedule from the database
             List<Event> userSchedule = scheduleService.getUserSchedule("user_schedule_" + username.toLowerCase());
+            System.out.println(userSchedule);
 
             // Pass the user's schedule to the frontend
             request.setAttribute("userSchedule", userSchedule);
@@ -140,7 +136,6 @@ public class ScheduleServlet extends HttpServlet implements Routable {
         rd.forward(request, response);
     }
 
-
     public void setScheduleService(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
@@ -155,5 +150,42 @@ public class ScheduleServlet extends HttpServlet implements Routable {
         this.scheduleService.setJdbcPassword(JDBC_PASSWORD);
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        boolean authorized = securityService.isAuthorized(request);
+        if (authorized) {
+            System.out.println("Success, doDelete-ScheduleServlet");
+            String username = (String) request.getSession().getAttribute("username");
 
+            // Retrieve the eventId parameter from the request
+            String eventIdParameter = request.getParameter("eventId");
+            System.out.println(eventIdParameter);
+
+            if (eventIdParameter != null && !eventIdParameter.isEmpty()) {
+                try {
+                    int eventId = Integer.parseInt(eventIdParameter);
+
+                    // Delete the event from the user's schedule
+                    boolean success = scheduleService.deleteEvent("user_schedule_" + username.toLowerCase(), eventId);
+
+                    if (success) {
+                        // Send a success response
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    } else {
+                        // Send an error response
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    }
+                } catch (NumberFormatException e) {
+                    // Handle invalid eventId parameter
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }
+            } else {
+                // eventId parameter is missing
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } else {
+            // Unauthorized request
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
 }
