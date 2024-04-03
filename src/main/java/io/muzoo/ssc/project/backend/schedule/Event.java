@@ -13,7 +13,8 @@ import java.sql.Timestamp;
 @Table(name = "tbl_event")
 public class Event {
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
     private Timestamp dateTime;
     @ManyToOne (fetch = FetchType.LAZY)

@@ -90,6 +90,7 @@ public class EventController {
     public SimpleResponseDTO deleteEvent(@RequestParam String username,
                                          @RequestParam String eventId) {
         User user = userRepository.findFirstByUsername(username);
+        System.out.println(eventId);
         Optional<Event> eventOptional = eventRepository.findById(Long.parseLong(eventId));
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();
