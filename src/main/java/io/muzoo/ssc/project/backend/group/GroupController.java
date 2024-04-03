@@ -81,6 +81,11 @@ public class GroupController {
             // Leave group
             user.getGroups().remove(group);
             userRepository.save(user);
+            group.getUsers().remove(user);
+            groupRepository.save(group);
+            System.out.println(group.getUsers());
+            if (group.getUsers().isEmpty())
+                groupRepository.delete(group);
             return SimpleResponseDTO
                     .builder()
                     .success(true)
