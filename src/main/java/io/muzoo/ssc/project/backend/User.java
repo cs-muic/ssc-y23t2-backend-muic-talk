@@ -1,7 +1,7 @@
 package io.muzoo.ssc.project.backend;
 import java.util.HashSet;
 
-//import io.muzoo.ssc.project.backend.group.Group;
+import io.muzoo.ssc.project.backend.group.Group;
 import jakarta.persistence.*;
 import jdk.jfr.Name;
 import lombok.Getter;
@@ -23,4 +23,7 @@ public class User {
     private String displayName;
     private String password;
     private String role;
+
+    @ManyToMany
+    private Set<Group> groups = new HashSet<>();
 }
