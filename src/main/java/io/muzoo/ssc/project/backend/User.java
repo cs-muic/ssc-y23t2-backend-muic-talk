@@ -1,5 +1,7 @@
 package io.muzoo.ssc.project.backend;
+import java.util.HashSet;
 
+import io.muzoo.ssc.project.backend.group.Group;
 import jakarta.persistence.*;
 import jdk.jfr.Name;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.repository.Modifying;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,4 +26,9 @@ public class User {
 
     @OneToMany(mappedBy = "user2")
     List<Friend> requests;
+
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private Set<Group> groups = new HashSet<>();
+
 }
