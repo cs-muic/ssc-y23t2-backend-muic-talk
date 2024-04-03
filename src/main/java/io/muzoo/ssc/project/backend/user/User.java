@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend;
+package io.muzoo.ssc.project.backend.user;
 import java.util.HashSet;
 
 import io.muzoo.ssc.project.backend.group.Group;

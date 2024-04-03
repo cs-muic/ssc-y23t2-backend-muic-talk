@@ -1,8 +1,8 @@
 package io.muzoo.ssc.project.backend.group;
 
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
-import io.muzoo.ssc.project.backend.User;
-import io.muzoo.ssc.project.backend.UserRepository;
+import io.muzoo.ssc.project.backend.user.User;
+import io.muzoo.ssc.project.backend.user.UserRepository;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import org.apache.commons.codec.digest.DigestUtils;

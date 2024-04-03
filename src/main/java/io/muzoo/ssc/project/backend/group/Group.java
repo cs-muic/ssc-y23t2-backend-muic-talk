@@ -1,15 +1,12 @@
 package io.muzoo.ssc.project.backend.group;
 
-import io.muzoo.ssc.project.backend.User;
+import io.muzoo.ssc.project.backend.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity

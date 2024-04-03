@@ -1,13 +1,12 @@
 package io.muzoo.ssc.project.backend.group;
 
-import io.muzoo.ssc.project.backend.User;
-import io.muzoo.ssc.project.backend.UserRepository;
+import io.muzoo.ssc.project.backend.user.User;
+import io.muzoo.ssc.project.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.List;
 
 @Service
 public class GroupService {

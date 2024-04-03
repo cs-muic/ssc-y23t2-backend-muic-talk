@@ -1,5 +1,6 @@
-package io.muzoo.ssc.project.backend;
+package io.muzoo.ssc.project.backend.friend;
 
+import io.muzoo.ssc.project.backend.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

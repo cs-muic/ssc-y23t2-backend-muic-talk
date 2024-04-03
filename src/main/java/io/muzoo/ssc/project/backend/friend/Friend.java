@@ -1,7 +1,7 @@
-package io.muzoo.ssc.project.backend;
+package io.muzoo.ssc.project.backend.friend;
 
+import io.muzoo.ssc.project.backend.user.User;
 import jakarta.persistence.*;
-import jdk.jfr.Name;
 import lombok.Getter;
 import lombok.Setter;
 

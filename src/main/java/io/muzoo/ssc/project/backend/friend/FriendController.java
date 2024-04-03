@@ -1,7 +1,9 @@
 package io.muzoo.ssc.project.backend.friend;
 
 import io.muzoo.ssc.project.backend.*;
+import io.muzoo.ssc.project.backend.user.User;
 import io.muzoo.ssc.project.backend.user.UserDoesNotExistException;
+import io.muzoo.ssc.project.backend.user.UserRepository;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import org.springframework.beans.factory.annotation.Autowired;

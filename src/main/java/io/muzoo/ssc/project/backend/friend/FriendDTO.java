@@ -1,13 +1,9 @@
 package io.muzoo.ssc.project.backend.friend;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import io.muzoo.ssc.project.backend.Friend;
 import jakarta.json.JsonArray;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
