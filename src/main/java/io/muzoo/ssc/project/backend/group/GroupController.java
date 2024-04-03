@@ -62,12 +62,35 @@ public class GroupController {
         JsonArrayBuilder groups = Json.createArrayBuilder();
         for (Group group : groupSet) {
             groups.add(Json.createObjectBuilder()
-                    .add("name", group.getName()));
+                            .add("groupId", group.getId())
+                           .add("name", group.getName()));
         }
         return GroupDTO
                 .builder()
                 .success(true)
                 .groups(groups.build())
+                .build();
+    }
+
+    @PostMapping("/user/groups/leave")
+    public SimpleResponseDTO leaveGroup(@RequestParam String username,
+                               @RequestParam String groupId) {
+        User user = userRepository.findFirstByUsername(username);
+        Group group = groupRepository.findById(groupId);
+        if (user.getGroups().contains(group)) {
+            // Leave group
+            user.getGroups().remove(group);
+            userRepository.save(user);
+            return SimpleResponseDTO
+                    .builder()
+                    .success(true)
+                    .message("Successfully left group.")
+                    .build();
+        }
+        return SimpleResponseDTO
+                .builder()
+                .success(false)
+                .message("User is not in this group!!")
                 .build();
     }
 }

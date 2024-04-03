@@ -25,5 +25,6 @@ public class User {
     private String role;
 
     @ManyToMany
+    @JoinTable(schema = "join_tables", name = "tbl_user_groups", joinColumns = @JoinColumn(name = "user_username"), inverseJoinColumns = @JoinColumn(name = "groups_id"))
     private Set<Group> groups = new HashSet<>();
 }

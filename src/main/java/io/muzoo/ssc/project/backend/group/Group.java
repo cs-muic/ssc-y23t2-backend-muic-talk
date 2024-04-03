@@ -22,7 +22,7 @@ public class Group {
 
     @Setter
     @Getter
-    @ManyToMany(mappedBy="groups", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy="groups", fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 
     // Add convenience methods to manage users
@@ -31,10 +31,4 @@ public class Group {
         this.users.add(user);
         user.getGroups().add(this);
     }
-
-    public void removeUser(User user) {
-        this.users.remove(user);
-        user.getGroups().remove(this);
-    }
-    // Constructors, getters, and setters
 }
