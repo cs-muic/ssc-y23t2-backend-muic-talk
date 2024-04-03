@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend.user;
+package io.muzoo.ssc.project.backend.schedule;
 
 import org.springframework.stereotype.Service;
 

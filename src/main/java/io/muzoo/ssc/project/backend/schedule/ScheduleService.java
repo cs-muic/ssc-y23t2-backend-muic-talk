@@ -1,7 +1,6 @@
-package io.muzoo.ssc.project.backend.user;
+package io.muzoo.ssc.project.backend.schedule;
 
-import io.muzoo.ssc.project.backend.user.Event;
-import org.springframework.beans.factory.annotation.Value;
+import io.muzoo.ssc.project.backend.schedule.Event;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;

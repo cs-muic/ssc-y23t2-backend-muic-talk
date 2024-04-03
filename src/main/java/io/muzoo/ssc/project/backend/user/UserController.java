@@ -3,6 +3,8 @@ package io.muzoo.ssc.project.backend.user;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
 import io.muzoo.ssc.project.backend.friend.Friend;
 import io.muzoo.ssc.project.backend.friend.FriendRepository;
+import io.muzoo.ssc.project.backend.schedule.DatabaseConnection;
+import io.muzoo.ssc.project.backend.schedule.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
