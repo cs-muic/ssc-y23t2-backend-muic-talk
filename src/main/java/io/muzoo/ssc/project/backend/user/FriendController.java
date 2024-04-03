@@ -137,10 +137,4 @@ public class FriendController {
         // check if delete correct
         System.out.println("deleted!!!");
     }
-
-    public void deleteAllFriends(@RequestParam String username) {
-        User user = userRepository.findFirstByUsername(username);
-        List<Friend> friends = friendRepository.findAllByUser1OrUser2(user, user);
-        friendRepository.deleteAll(friends);
-    }
 }
