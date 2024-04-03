@@ -26,7 +26,7 @@ public class FriendController {
     @Autowired
     private FriendRepository friendRepository;
 
-    @PostMapping("/user/add")
+    @PostMapping("/user/friends/add")
     public SimpleResponseDTO sendFriendRequest(@RequestParam String username,
                            @RequestParam String userToAdd) {
         try {
@@ -66,7 +66,7 @@ public class FriendController {
         }
     }
 
-    @PostMapping("/user/accept")
+    @PostMapping("/user/friends/accept")
     public SimpleResponseDTO acceptFriendRequest(@RequestParam String username,
                                         @RequestParam String userToAdd) {
         // We know userToAdd is user1
@@ -82,13 +82,13 @@ public class FriendController {
                 .build();
     }
 
-    @PostMapping("/user/requests")
+    @PostMapping("/user/friends/requests")
     public FriendDTO getFriendRequests(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
         List<Friend> requests = friendRepository.findAllByUser1OrUser2(user,user);
         JsonArrayBuilder friends = Json.createArrayBuilder();
         for (Friend req : requests) {
-            if (req.isPending()) {
+            if (req.isPending() && !Objects.equals(req.getUser1().getUsername(), user.getUsername())) {
                 friends.add(Json.createObjectBuilder()
                         .add("username", req.getUser1().getUsername())
                 );
@@ -124,5 +124,17 @@ public class FriendController {
                 .friends(friends.build())
                 .request(false)
                 .build();
+    }
+
+    @PostMapping("/user/friends/remove")
+    public void deleteFriend(@RequestParam String username,
+                                          @RequestParam String userToDelete) {
+        User user = userRepository.findFirstByUsername(username);
+        User toDelete = userRepository.findFirstByUsername(userToDelete);
+        Friend friend = friendRepository.findFirstByUser1AndUser2(user, toDelete);
+        if (friend == null) friend = friendRepository.findFirstByUser1AndUser2(toDelete, user);
+        friendRepository.delete(friend);
+        // check if delete correct
+        System.out.println("deleted!!!");
     }
 }

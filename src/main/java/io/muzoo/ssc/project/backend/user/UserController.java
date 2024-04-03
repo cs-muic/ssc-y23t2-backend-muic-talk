@@ -1,5 +1,6 @@
 package io.muzoo.ssc.project.backend.user;
 
+import io.muzoo.ssc.project.backend.*;
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.UserRepository;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
@@ -16,6 +17,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.List;
+
 // You don't have to create a UserController or UserService object explicitly,
 // Spring will do for youuu
 @RestController
@@ -25,6 +28,9 @@ public class UserController {
     // e.g. class A requires class B but class B also requires class A (loopy)
     @Autowired // Spring wires it for you (I think that means it will create object?)
     private UserRepository userRepository;
+
+    @Autowired
+    private FriendRepository friendRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -120,7 +126,9 @@ public class UserController {
     public SimpleResponseDTO deleteUser(@RequestParam String username,
                                             @RequestParam String password) {
         User user = userRepository.findFirstByUsername(username);
+        List<Friend> friendList = friendRepository.findAllByUser1OrUser2(user, user);
         if (BCrypt.checkpw(password, user.getPassword())) {
+            friendRepository.deleteAll(friendList);
             userRepository.delete(user);
             return SimpleResponseDTO
                     .builder()
@@ -152,5 +160,4 @@ public class UserController {
             e.printStackTrace();
         }
     }
-
 }
