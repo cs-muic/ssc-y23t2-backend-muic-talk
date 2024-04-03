@@ -26,5 +26,4 @@ public class User {
 
     @ManyToMany
     private Set<Group> groups = new HashSet<>();
-
 }

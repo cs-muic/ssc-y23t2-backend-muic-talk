@@ -15,9 +15,7 @@ import java.util.List;
 public class FriendDTO {
 
     private boolean success;
-
     private List<Friend> friends;
-
     private boolean request;
 
 }

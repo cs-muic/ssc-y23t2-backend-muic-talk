@@ -19,8 +19,7 @@ import java.util.Set;
 public class Group {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String name;
     private Timestamp created;
 
@@ -40,7 +39,5 @@ public class Group {
         this.users.remove(user);
         user.getGroups().remove(this);
     }
-
-
     // Constructors, getters, and setters
 }

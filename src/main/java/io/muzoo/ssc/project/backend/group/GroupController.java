@@ -3,19 +3,16 @@ package io.muzoo.ssc.project.backend.group;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.UserRepository;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RestController
 public class GroupController {
@@ -34,9 +31,12 @@ public class GroupController {
             @RequestParam String username,
             @RequestParam String name) {
         User user = userRepository.findFirstByUsername(username);
+        Timestamp created = Timestamp.valueOf(LocalDateTime.now());
+        System.out.println(created);
         Group newGroup = new Group();
         newGroup.setName(name);
-        newGroup.setCreated(Timestamp.valueOf(LocalDateTime.now()));
+        newGroup.setCreated(created);
+        newGroup.setId(DigestUtils.sha256Hex(created.toString()));
         newGroup.addUser(user);
         groupRepository.save(newGroup);
         return SimpleResponseDTO
@@ -53,5 +53,21 @@ public class GroupController {
             return ResponseEntity.ok().body("User added to group successfully");
         }
         return ResponseEntity.badRequest().body("Failed to add user to group");
+    }
+
+    @PostMapping("/user/groups")
+    public GroupDTO getGroups(@RequestParam String username) {
+        User user = userRepository.findFirstByUsername(username);
+        Set<Group> groupSet = user.getGroups();
+        JsonArrayBuilder groups = Json.createArrayBuilder();
+        for (Group group : groupSet) {
+            groups.add(Json.createObjectBuilder()
+                    .add("name", group.getName()));
+        }
+        return GroupDTO
+                .builder()
+                .success(true)
+                .groups(groups.build())
+                .build();
     }
 }
