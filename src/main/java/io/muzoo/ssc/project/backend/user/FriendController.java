@@ -31,10 +31,24 @@ public class FriendController {
                            @RequestParam String userToAdd) {
         try {
             User toAdd = userRepository.findFirstByUsername(userToAdd);
+            User user = userRepository.findFirstByUsername(username);
             if (toAdd == null) throw new UserDoesNotExistException("The user you are trying to add does not exist.");
+
+            String errorMsg = "";
+            if (friendRepository.findFirstByUser1AndUser2(user, toAdd) != null) {
+                if (friendRepository.findFirstByUser1AndUser2(user, toAdd).isPending()) {
+                    errorMsg = "Friend request pending.";
+                } else errorMsg = "This user is already a friend";
+            } else if (friendRepository.findFirstByUser1AndUser2(toAdd, user) != null) {
+                if (friendRepository.findFirstByUser1AndUser2(toAdd, user).isPending()) {
+                    errorMsg = "Friend request pending.";
+                } else errorMsg = "This user is already a friend";
+            }
+            if (!errorMsg.isEmpty()) throw new ExistingFriendException(errorMsg);
+
             Friend newFriend = new Friend();
-            newFriend.setUser1(userRepository.findFirstByUsername(username));
-            newFriend.setUser2(userRepository.findFirstByUsername(userToAdd));
+            newFriend.setUser1(user);
+            newFriend.setUser2(toAdd);
             newFriend.setPending(true);
             friendRepository.save(newFriend);
             return SimpleResponseDTO
@@ -43,7 +57,7 @@ public class FriendController {
                     .message(String.format("Friend Request sent successfully to %s.", userToAdd))
                     .build();
         }
-        catch (UserDoesNotExistException e) {
+        catch (UserDoesNotExistException | ExistingFriendException e) {
             return SimpleResponseDTO
                     .builder()
                     .success(false)
