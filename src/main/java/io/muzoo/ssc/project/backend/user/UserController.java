@@ -4,12 +4,8 @@ import io.muzoo.ssc.project.backend.*;
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.UserRepository;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
-import io.muzoo.ssc.project.backend.user.DatabaseConnection;
-import jakarta.servlet.ServletException;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +33,9 @@ public class UserController {
 
     @Autowired
     private DatabaseConnection databaseConnectionService;
+
+    @Autowired
+    private ScheduleService scheduleController;
 
     @PostMapping("/user/create")
     public SimpleResponseDTO createUser(@RequestParam String username,
