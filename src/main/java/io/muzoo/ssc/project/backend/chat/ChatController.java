@@ -8,9 +8,10 @@ import io.muzoo.ssc.project.backend.user.User;
 import io.muzoo.ssc.project.backend.user.UserRepository;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
-import jakarta.websocket.server.PathParam;
+import jakarta.ws.rs.PathParam;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class ChatController {
     }
 
     @PostMapping("/user/chat/{groupId}/send")
-    public SimpleResponseDTO sendMessage(@PathParam("groupId")String groupId,
+    public SimpleResponseDTO sendMessage(@PathVariable("groupId")String groupId,
                                          @RequestParam String username,
                                          @RequestParam String message) {
         User user = userRepository.findFirstByUsername(username);
@@ -59,9 +60,9 @@ public class ChatController {
             newMsg.setMessage(message);
             Timestamp time = Timestamp.valueOf(LocalDateTime.now());
             String hash = DigestUtils.sha256Hex(String.format("%s%s", groupId, time));
-            System.out.println(hash);
             newMsg.setSender(user);
             newMsg.setMessageId(hash);
+            newMsg.setSent(time);
             chatRepository.save(newMsg);
             return SimpleResponseDTO
                     .builder()
@@ -77,7 +78,7 @@ public class ChatController {
     }
 
     @PostMapping("/user/chat/{groupId}")
-    public ChatDTO fetchGroupChat(@PathParam("groupId")String groupId,
+    public ChatDTO fetchGroupChat(@PathVariable("groupId")String groupId,
                                  @RequestParam String username) {
         Group group = groupRepository.findById(groupId);
         User user = userRepository.findFirstByUsername(username);
