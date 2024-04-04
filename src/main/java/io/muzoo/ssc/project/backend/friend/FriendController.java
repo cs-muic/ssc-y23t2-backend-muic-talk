@@ -31,7 +31,7 @@ public class FriendController {
         try {
             User toAdd = userRepository.findFirstByUsername(userToAdd);
             User user = userRepository.findFirstByUsername(username);
-            if (toAdd == null) throw new UserDoesNotExistException("The user you are trying to add does not exist.");
+            if (toAdd == null || Objects.equals(toAdd.getUsername(), "null")) throw new UserDoesNotExistException("The user you are trying to add does not exist.");
 
             String errorMsg = "";
             if (friendRepository.findFirstByUser1AndUser2(user, toAdd) != null) {
