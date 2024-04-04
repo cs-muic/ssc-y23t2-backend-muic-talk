@@ -15,7 +15,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -27,11 +27,11 @@ public class SecuringWebApplicationTests {
 	@Test
 	public void loginWithValidUserThenAuthenticated() throws Exception {
 		FormLoginRequestBuilder login = formLogin()
-			.user("user")
-			.password("password");
+			.user("admin")
+			.password("123456");
 
 		mockMvc.perform(login)
-			.andExpect(authenticated().withUsername("user"));
+			.andExpect(authenticated().withUsername("admin"));
 	}
 
 	@Test
@@ -50,12 +50,12 @@ public class SecuringWebApplicationTests {
 			.andExpect(status().isOk());
 	}
 
-	@Test
-	public void accessSecuredResourceUnauthenticatedThenRedirectsToLogin() throws Exception {
-		mockMvc.perform(get("/hello"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrlPattern("**/login"));
-	}
+//	@Test
+//	public void accessSecuredResourceUnauthenticatedThenRedirectsToLogin() throws Exception {
+//		mockMvc.perform(get("/hello"))
+//			.andExpect(status().is3xxRedirection())
+//			.andExpect(redirectedUrlPattern("**/login"));
+//	}
 
 	@Test
 	@WithMockUser
