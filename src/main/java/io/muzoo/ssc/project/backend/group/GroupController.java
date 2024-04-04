@@ -1,6 +1,8 @@
 package io.muzoo.ssc.project.backend.group;
 
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
+import io.muzoo.ssc.project.backend.chat.Chat;
+import io.muzoo.ssc.project.backend.chat.ChatRepository;
 import io.muzoo.ssc.project.backend.user.User;
 import io.muzoo.ssc.project.backend.user.UserRepository;
 import jakarta.json.Json;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -25,6 +29,9 @@ public class GroupController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ChatRepository chatRepository;
 
     @PostMapping("/user/groups/create")
     public SimpleResponseDTO createGroup(
@@ -83,14 +90,16 @@ public class GroupController {
             userRepository.save(user);
             group.getUsers().remove(user);
             groupRepository.save(group);
-            System.out.println(group.getUsers());
-            if (group.getUsers().isEmpty())
+            if (group.getUsers().isEmpty()) {
+                List<Chat> chatList = chatRepository.findAllByGroupOrderBySent(group);
+                chatRepository.deleteAll(chatList);
                 groupRepository.delete(group);
-            return SimpleResponseDTO
-                    .builder()
-                    .success(true)
-                    .message("Successfully left group.")
-                    .build();
+                return SimpleResponseDTO
+                        .builder()
+                        .success(true)
+                        .message("Successfully left group.")
+                        .build();
+            }
         }
         return SimpleResponseDTO
                 .builder()
@@ -102,12 +111,15 @@ public class GroupController {
     @PostMapping("/user/groups/invite")
     public SimpleResponseDTO inviteToGroup(@RequestParam String toInvite,
                                            @RequestParam String groupId) {
-        System.out.println(toInvite);
         User user = userRepository.findFirstByUsername(toInvite);
-        System.out.println(user.getUsername());
+        if (user == null || Objects.equals(user.getUsername(), "null"))
+            return SimpleResponseDTO
+                    .builder()
+                    .success(false)
+                    .message("User does not exist.")
+                    .build();
         Group group = groupRepository.findById(groupId);
-        System.out.println(group.getName());
-        System.out.println(user.getGroups().contains(group));
+        System.out.println("Inviting " + user.getUsername() + " to " + group.getName());
         if (user.getGroups().contains(group)) {
             return SimpleResponseDTO
                     .builder()
