@@ -32,5 +32,14 @@ public class InitApplicationRunner implements ApplicationRunner {
             userRepository.save(admin);
         }
 
+        User unknownUser = userRepository.findFirstByUsername("null");
+        if  (unknownUser == null){
+            unknownUser = new User();
+            unknownUser.setUsername("null");
+            unknownUser.setDisplayName("Unknown User");
+            unknownUser.setPassword(passwordEncoder.encode("123"));
+            unknownUser.setRole("NULL");
+            userRepository.save(unknownUser);
+        }
     }
 }
