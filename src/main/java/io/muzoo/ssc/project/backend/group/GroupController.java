@@ -98,4 +98,30 @@ public class GroupController {
                 .message("User is not in this group!!")
                 .build();
     }
+
+    @PostMapping("/user/groups/invite")
+    public SimpleResponseDTO inviteToGroup(@RequestParam String toInvite,
+                                           @RequestParam String groupId) {
+        System.out.println(toInvite);
+        User user = userRepository.findFirstByUsername(toInvite);
+        System.out.println(user.getUsername());
+        Group group = groupRepository.findById(groupId);
+        System.out.println(group.getName());
+        System.out.println(user.getGroups().contains(group));
+        if (user.getGroups().contains(group)) {
+            return SimpleResponseDTO
+                    .builder()
+                    .success(false)
+                    .message("User is already in group.")
+                    .build();
+        } else {
+            group.addUser(user);
+            groupRepository.save(group);
+            return SimpleResponseDTO
+                    .builder()
+                    .success(true)
+                    .message("User has been invited.")
+                    .build();
+        }
+    }
 }
