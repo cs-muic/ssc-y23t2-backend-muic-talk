@@ -1,0 +1,13 @@
+services:
+  mariaDB:
+    image: mariadb:10
+    container_name: muictalk
+    environment:
+      - MARIADB_ROOT_PASSWORD=securedpassword
+    ports:
+      - "188.166.221.6:3306:3306"
+    networks:
+      - webapp
+networks:
+  webapp:
+    external: true
