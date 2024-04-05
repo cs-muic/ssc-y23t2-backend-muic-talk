@@ -1,0 +1,36 @@
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${DIR}/app/certs:/etc/nginx/certs:ro
+      - ${DIR}/app/vhost.d:/etc/nginx/vhost.d
+      - ${DIR}/app/html:/usr/share/nginx/html
+      - ${DIR}/app/conf.d:/etc/nginx/conf.d
+      - ${DIR}/app/log:/var/log/nginx/
+      - ${DIR}/assets/extra.conf:/etc/nginx/conf.d/extra.conf
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - webapp
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+    restart: always
+
+  letsencrypt:
+    image: nginxproxy/acme-companion
+    container_name: letsencrypt
+    volumes:
+      - ${DIR}/app/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy
+    environment:
+      - DEFAULT_EMAIL=gigadot@gmail.com
+    restart: always
+
+networks:
+  webapp:
+    external: true

@@ -8,7 +8,7 @@
 		<version>3.2.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>io.muzoo.ssc.project.backend</groupId>
 	<artifactId>securing-web-complete</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>securing-web-complete</name>
@@ -114,5 +114,17 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>io.muzoo.ssc.project.backend.WebApplication</mainClass>
+					<layout>JAR</layout>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

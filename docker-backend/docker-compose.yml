@@ -1,0 +1,24 @@
+services:
+  backend:
+    image: 'sscwebapphw/backend'
+    build:
+      context: .
+    container_name: backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/muictalk
+      - SPRING_DATASOURCE_USERNAME=ssc
+      - SPRING_DATASOURCE_PASSWORD=securedpassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MariaDBDialect
+      - VIRTUAL_HOST=muictalk.64-ssc.com
+      - LETSENCRYPT_HOST=muictalk.64-ssc.com
+      - VIRTUAL_PORT=8081
+      - VIRTUAL_PATH=/api
+    ports:
+      - "8081:8081"
+    networks:
+      - webapp
+
+networks:
+  webapp:
+    external: true
