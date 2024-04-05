@@ -33,7 +33,7 @@ public class GroupController {
     @Autowired
     private ChatRepository chatRepository;
 
-    @PostMapping("/user/groups/create")
+    @PostMapping("/api/user/groups/create")
     public SimpleResponseDTO createGroup(
             @RequestParam String username,
             @RequestParam String name) {
@@ -53,7 +53,7 @@ public class GroupController {
                 .build();
     }
 
-    @PostMapping("/user/groups/addUser")
+    @PostMapping("/api/user/groups/addUser")
     public ResponseEntity<?> addUserToGroup(@RequestParam Long groupId, @RequestParam Long userId) {
         boolean result = groupService.addUserToGroup(groupId, userId);
         if(result) {
@@ -62,7 +62,7 @@ public class GroupController {
         return ResponseEntity.badRequest().body("Failed to add user to group");
     }
 
-    @PostMapping("/user/groups")
+    @PostMapping("/api/user/groups")
     public GroupDTO getGroups(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
         Set<Group> groupSet = user.getGroups();
@@ -79,7 +79,7 @@ public class GroupController {
                 .build();
     }
 
-    @PostMapping("/user/groups/leave")
+    @PostMapping("/api/user/groups/leave")
     public SimpleResponseDTO leaveGroup(@RequestParam String username,
                                @RequestParam String groupId) {
         User user = userRepository.findFirstByUsername(username);
@@ -108,7 +108,7 @@ public class GroupController {
                 .build();
     }
 
-    @PostMapping("/user/groups/invite")
+    @PostMapping("/api/user/groups/invite")
     public SimpleResponseDTO inviteToGroup(@RequestParam String toInvite,
                                            @RequestParam String groupId) {
         User user = userRepository.findFirstByUsername(toInvite);

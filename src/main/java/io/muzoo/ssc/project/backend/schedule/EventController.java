@@ -24,7 +24,7 @@ public class EventController {
     @Autowired
     private EventRepository eventRepository;
 
-    @PostMapping("/user/events")
+    @PostMapping("/api/user/events")
     public EventDTO getSchedule(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
         List<Event> events = eventRepository.findAllByUser(user);
@@ -43,7 +43,7 @@ public class EventController {
                 .build();
     }
 
-    @PostMapping("/user/events/new")
+    @PostMapping("/api/user/events/new")
     public SimpleResponseDTO addEvent(@RequestParam String username,
                                       @RequestParam String eventName,
                                       @RequestParam String eventDate,
@@ -86,7 +86,7 @@ public class EventController {
         }
     }
 
-    @PostMapping("/user/events/delete")
+    @PostMapping("/api/user/events/delete")
     public SimpleResponseDTO deleteEvent(@RequestParam String username,
                                          @RequestParam String eventId) {
         User user = userRepository.findFirstByUsername(username);

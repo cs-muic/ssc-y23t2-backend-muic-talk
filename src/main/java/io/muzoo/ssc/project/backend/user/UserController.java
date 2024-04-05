@@ -44,7 +44,7 @@ public class UserController {
     @Autowired
     private GroupRepository groupRepository;
 
-    @PostMapping("/user/create")
+    @PostMapping("/api/user/create")
     public SimpleResponseDTO createUser(@RequestParam String username,
                              @RequestParam String displayName,
                              @RequestParam String password) {
@@ -73,7 +73,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/displayName")
+    @PostMapping("/api/user/displayName")
     public SimpleResponseDTO changeDisplayName(@RequestParam String username,
                                         @RequestParam String displayName) {
         User user = userRepository.findFirstByUsername(username);
@@ -86,7 +86,7 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping("/user/password")
+    @PostMapping("/api/user/password")
     public SimpleResponseDTO changePassword(@RequestParam String username,
                                                @RequestParam String oldPassword,
                                                @RequestParam String newPassword) {
@@ -108,7 +108,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/user/password/verify")
+    @PostMapping("/api/user/password/verify")
     public SimpleResponseDTO verifyPassword(@RequestParam String username,
                                             @RequestParam String password) {
         User user = userRepository.findFirstByUsername(username);
@@ -127,7 +127,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/user/delete")
+    @PostMapping("/api/user/delete")
     public SimpleResponseDTO deleteUser(@RequestParam String username,
                                             @RequestParam String password) {
         User user = userRepository.findFirstByUsername(username);

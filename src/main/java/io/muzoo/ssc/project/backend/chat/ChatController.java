@@ -31,7 +31,7 @@ public class ChatController {
     @Autowired
     private ChatRepository chatRepository;
 
-    @PostMapping("/chat/all")
+    @PostMapping("/api/chat/all")
     public GroupDTO fetchChats(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
         Set<Group> groupSet = user.getGroups();
@@ -48,7 +48,7 @@ public class ChatController {
                 .build();
     }
 
-    @PostMapping("/user/chat/{groupId}/send")
+    @PostMapping("/api/user/chat/{groupId}/send")
     public SimpleResponseDTO sendMessage(@PathVariable("groupId")String groupId,
                                          @RequestParam String username,
                                          @RequestParam String message) {
@@ -77,7 +77,7 @@ public class ChatController {
                 .build();
     }
 
-    @PostMapping("/user/chat/{groupId}")
+    @PostMapping("/api/user/chat/{groupId}")
     public ChatDTO fetchGroupChat(@PathVariable("groupId")String groupId,
                                  @RequestParam String username) {
         Group group = groupRepository.findById(groupId);

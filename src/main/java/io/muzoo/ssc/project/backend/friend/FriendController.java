@@ -25,7 +25,7 @@ public class FriendController {
     @Autowired
     private FriendRepository friendRepository;
 
-    @PostMapping("/user/friends/add")
+    @PostMapping("/api/user/friends/add")
     public SimpleResponseDTO sendFriendRequest(@RequestParam String username,
                            @RequestParam String userToAdd) {
         try {
@@ -65,7 +65,7 @@ public class FriendController {
         }
     }
 
-    @PostMapping("/user/friends/accept")
+    @PostMapping("/api/user/friends/accept")
     public SimpleResponseDTO acceptFriendRequest(@RequestParam String username,
                                         @RequestParam String userToAdd) {
         // We know userToAdd is user1
@@ -81,7 +81,7 @@ public class FriendController {
                 .build();
     }
 
-    @PostMapping("/user/friends/requests")
+    @PostMapping("/api/user/friends/requests")
     public FriendDTO getFriendRequests(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
         List<Friend> requests = friendRepository.findAllByUser1OrUser2(user,user);
@@ -100,7 +100,7 @@ public class FriendController {
                 .request(true)
                 .build();
     }
-    @PostMapping("/user/friends")
+    @PostMapping("/api/user/friends")
     public FriendDTO getFriends(@RequestParam String username) {
         User user = userRepository.findFirstByUsername(username);
         List<Friend> requests = friendRepository.findAllByUser1OrUser2(user,user);
@@ -125,7 +125,7 @@ public class FriendController {
                 .build();
     }
 
-    @PostMapping("/user/friends/remove")
+    @PostMapping("/api/user/friends/remove")
     public void deleteFriend(@RequestParam String username,
                                           @RequestParam String userToDelete) {
         User user = userRepository.findFirstByUsername(username);
